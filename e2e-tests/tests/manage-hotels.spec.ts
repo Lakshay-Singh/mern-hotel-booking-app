@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import exp from 'constants';
 import path from 'path';
 
 const UI_URL="http://localhost:5173/"
@@ -52,7 +53,7 @@ test("should allow user to add a hotel",async({page})=>{
 test("should display hotels",async({page})=>{
     await page.goto(`${UI_URL}my-hotels`);
 
-    await expect(page.getByText("Skyline Hotel")).toBeVisible();
+    await expect(page.getByText("Skyline Getaways")).toBeVisible();
     await expect(page.getByText("Phasellus eu lacus ut augue")).toBeVisible();
     await expect(page.getByText("Delhi, India")).toBeVisible();
     await expect(page.getByText("Ski Resort")).toBeVisible();
@@ -60,7 +61,25 @@ test("should display hotels",async({page})=>{
     await expect(page.getByText("2 adults, 1 children")).toBeVisible();
     await expect(page.getByText("4 Star Rating")).toBeVisible();
 
-    await expect(page.getByRole("link",{name:"View Details"})).toBeVisible();
+    await expect(page.getByRole("link",{name:"View Details"}).first()).toBeVisible();
     await expect(page.getByRole("link",{name:"Add Hotel"})).toBeVisible();
     
-})
+});
+
+test("should edit hotel",async({page})=>{
+    await page.goto(`${UI_URL}my-hotels`);
+
+    await page.getByRole("link",{name:"View Details"}).first().click();
+    
+    await page.waitForSelector('[name=name]',{state:"attached"})
+    await expect(page.locator('[name=name]')).toHaveValue('Skyline Getaways')
+    await page.locator('[name=name]').fill("Skyline Getaways UPDATED")
+    await page.getByRole("button",{name:"Save"}).click();
+    await expect(page.getByText("Hotel Updated!")).toBeVisible();
+
+    await page.reload();
+
+    await expect(page.locator('[name=name]')).toHaveValue("Skyline Getaways UPDATED")
+    await page.locator('[name=name]').fill('Skyline Getaways');
+    await page.getByRole("button",{name:"Save"}).click();
+});

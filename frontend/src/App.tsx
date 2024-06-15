@@ -5,6 +5,7 @@ import SignIn from './pages/SignIn'
 import AddHotel from './pages/AddHotel'
 import { useAppContext } from './context.js/AppContext'
 import MyHotels from './pages/MyHotels'
+import EditHotel from './pages/EditHotel'
 
 const App = () => {
 
@@ -19,10 +20,10 @@ const App = () => {
         <Route path='/sign-in' element={<Layout><SignIn/></Layout>} />
         {isLoggedIn && <>
           <Route path='/add-hotel' element={<Layout><AddHotel/></Layout>}/>
-        </>}
-        {isLoggedIn && <>
           <Route path='/my-hotels' element={<Layout><MyHotels/></Layout>}/>
+          <Route path='/edit-hotel/:hotelId' element={<Layout><EditHotel/></Layout>}/>
         </>}
+
         
       </Routes>
     </Router>
