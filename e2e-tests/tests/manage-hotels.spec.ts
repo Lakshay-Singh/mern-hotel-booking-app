@@ -47,4 +47,20 @@ test("should allow user to add a hotel",async({page})=>{
 
     await expect(page.getByText("Hotel Saved")).toBeVisible();
 
+});
+
+test("should display hotels",async({page})=>{
+    await page.goto(`${UI_URL}my-hotels`);
+
+    await expect(page.getByText("Skyline Hotel")).toBeVisible();
+    await expect(page.getByText("Phasellus eu lacus ut augue")).toBeVisible();
+    await expect(page.getByText("Delhi, India")).toBeVisible();
+    await expect(page.getByText("Ski Resort")).toBeVisible();
+    await expect(page.getByText("Rs.5000/night")).toBeVisible();
+    await expect(page.getByText("2 adults, 1 children")).toBeVisible();
+    await expect(page.getByText("4 Star Rating")).toBeVisible();
+
+    await expect(page.getByRole("link",{name:"View Details"})).toBeVisible();
+    await expect(page.getByRole("link",{name:"Add Hotel"})).toBeVisible();
+    
 })
