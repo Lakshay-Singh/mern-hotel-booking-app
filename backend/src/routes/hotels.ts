@@ -1,6 +1,7 @@
 import express,{Request,Response} from 'express';
 import hotelModel from '../models/hotel';
 import { HotelSearchResponse } from '../shared/types';
+import { param, validationResult } from 'express-validator';
 
 const searchRouter=express.Router();
 
@@ -47,6 +48,32 @@ searchRouter.get("/search",async(req:Request,res:Response)=>{
     }
 
 })
+
+
+//api/hotels/464643378869765
+searchRouter.get("/:id",[
+  param("id").notEmpty().withMessage("Hotel ID is required")
+],async(req:Request,res:Response)=>{
+  const errors=validationResult(req);
+  if(!errors.isEmpty()){
+    return res.status(400).json({errors:errors.array()});
+  }
+
+  const id=req.params.id.toString();
+
+  try{
+    const hotel=await hotelModel.findById(id);
+    res.json(hotel);
+  }
+  catch(error){
+    console.log(error);
+    res.status(500).json({message:"Error fetching hotel"})
+  }
+})
+
+
+
+
 
 
 const constructSearchQuery = (queryParams: any) => {
