@@ -1,4 +1,4 @@
-import React, { Children, useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 
 type SearchContext={
     destination:string;
