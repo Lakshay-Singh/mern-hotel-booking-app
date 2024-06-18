@@ -8,6 +8,7 @@ import cookieParser from 'cookie-parser';
 import path from 'path';
 import {v2 as cloudinary} from 'cloudinary';
 import hotelRouter from './routes/my-hotels';
+import searchRouter from './routes/hotels';
 
 cloudinary.config({
     cloud_name:process.env.CLOUDINARY_CLOUD_NAME,
@@ -33,6 +34,7 @@ app.use(express.static(path.join(__dirname,"../../frontend/dist")))
 app.use("/api/auth",authRouter)
 app.use("/api/users",userRouter)
 app.use("/api/my-hotels",hotelRouter) 
+app.use("/api/hotels",searchRouter)
 
 app.get("*",(req:Request,res:Response)=>{
     res.sendFile(path.join(__dirname,"../../frontend/dist/index.html"))
