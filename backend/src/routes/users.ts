@@ -2,8 +2,29 @@ import express, {Request,Response} from 'express'
 import userModel from '../models/user'
 import jwt from 'jsonwebtoken'
 import {check, validationResult} from 'express-validator'
+import verifyToken from '../middleware/auth';
 
 const userRouter=express.Router();
+
+//get logged in user
+userRouter.get("/me",verifyToken,async(req:Request,res:Response)=>{
+    const  userId=req.userId;
+
+    try{
+        const user=await userModel.findById(userId).select("-password")//not include password field
+
+        if(!user){
+            res.status(400).json({message:"User Not Found"})
+        }
+
+        res.json(user);
+    }
+    catch(error){
+        console.log(error);
+        res.status(500).json({message:"Something went wrong!"})
+    }
+})
+
 
 //api/users/register
 userRouter.post("/register",[

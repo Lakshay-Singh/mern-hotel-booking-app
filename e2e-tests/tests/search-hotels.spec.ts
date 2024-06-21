@@ -40,3 +40,30 @@ test("should show hotel detail",async({page})=>{
     await expect(page.getByRole("button", { name: "Book now" })).toBeVisible();
 
 });
+
+test("should book hotel", async({page})=>{
+    await page.goto(UI_URL);
+
+    await page.getByPlaceholder("Where are you going?").fill("Delhi");
+
+    const date=new Date();
+    date.setDate(date.getDate()+3);
+    const formattedDate=date.toISOString().split("T")[0];
+    await page.getByPlaceholder("Check-Out Date").fill(formattedDate);
+
+    await page.getByRole("button",{name:"Search"}).click();
+
+    await page.getByText("Skyline Getaways").click();
+    await page.getByRole("button", { name: "Book now" }).click();
+
+    await expect(page.getByText("Confirm Your Details")).toBeVisible();
+    
+    const stripeFrame=page.frameLocator("iframe").first();
+    await stripeFrame.locator('[placeholder="Card number"]').fill("4242424242424242");
+    await stripeFrame.locator('[placeholder="MM / YY"]').fill("04/30");
+    await stripeFrame.locator('[placeholder="ZIP]').fill("12345");
+
+    await page.getByRole("button",{name:"Confirm Booking"}).click();
+    await expect(page.getByText("Booking Saved!")).toBeVisible();
+    
+});

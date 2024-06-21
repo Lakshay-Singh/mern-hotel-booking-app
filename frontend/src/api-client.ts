@@ -1,11 +1,27 @@
 import { RegisterFormData } from "./pages/Register";
 import { SignInFormData } from "./pages/SignIn";
-import {HotelSearchResponse, HotelType} from '../../backend/src/shared/types';
+import {HotelSearchResponse, HotelType, PaymentIntentResponse, UserType} from '../../backend/src/shared/types';
+import { BookingFormData } from "./forms/BookingForm/BookingForm";
 
 const API_BASE_URL=import.meta.env.VITE_API_BASE_URL || ''; 
 // contains all fetch requests
 
-//rerister user
+//get current user
+export const fetchCurrentUser=async():Promise<UserType>=>{
+    const response=await fetch(`${API_BASE_URL}/api/users/me`,{
+        credentials:"include"
+    })
+
+    if(!response.ok){
+        throw new Error("Error fetching user");
+    }
+
+    return response.json();
+}
+
+
+
+//register user
 export const register=async(formData:RegisterFormData)=>{
     const response=await fetch(`${API_BASE_URL}/api/users/register`,{
         method:'POST',
@@ -178,5 +194,40 @@ export const fetchHotelById=async(hotelId:string):Promise<HotelType>=>{
     }
 
     return response.json();
+
+}
+
+//payment intent
+export const createPaymentIntent=async(hotelId:string,numberOfNights:string):Promise<PaymentIntentResponse>=>{
+    const response=await fetch(`${API_BASE_URL}/api/hotels/${hotelId}/bookings/payment-intent`,{
+        method:"POST",
+        credentials:"include",
+        body:JSON.stringify({numberOfNights}),
+        headers:{
+            "Content-Type":"application/json"
+        }
+    });
+
+    if(!response.ok){
+        throw new Error("Error fetching payment intent"); 
+    }
+
+    return response.json()
+}
+
+//create booking
+export const createRoomBooking=async(formData:BookingFormData)=>{
+    const response=await fetch(`${API_BASE_URL}/api/hotels/${formData.hotelId}/bookings`,{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json",
+        },
+        credentials:"include",
+        body:JSON.stringify(formData)
+    })
+
+    if(!response.ok){
+        throw new Error("Error Booking Room")
+    }
 
 }
