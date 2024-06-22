@@ -55,8 +55,19 @@ searchRouter.get("/search",async(req:Request,res:Response)=>{
 
 })
 
+//all hotels
+searchRouter.get("/",async(req:Request,res:Response)=>{
+  try{
+    const hotels=await hotelModel.find().sort("-lastUpdated")
+    res.json(hotels)
+  }
+  catch(error){
+    console.log(error);
+    res.status(500).json({message:"Error fetching hotels"})
+  }
+})
 
-//api/hotels/464643378869765
+//api/hotels/464643378869765=>hotelbyid
 searchRouter.get("/:id",[
   param("id").notEmpty().withMessage("Hotel ID is required")
 ],async(req:Request,res:Response)=>{
